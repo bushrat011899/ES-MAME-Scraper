@@ -21,7 +21,7 @@ Usage
 Running the script directly is very simple:
 
 ```
-python romscraper.py [-p] [-d] [-h] ROM
+python romscraper.py ROM [-p] [-d] [-h] [-o=<file>]
 ```
 
 Where ROM is either a directory or file, specify using -p flag (-p for folder, leave out for file)
@@ -42,6 +42,10 @@ python romscraper.py /roms/ -p
 >>>19XX: The War Against Destiny
 >>>Frogger
 >>>Pac-Man
+
+python romscraper.py 19xx.zip -o /roms/gamelist.xml
+>>>19XX: The War Against Destiny
+>>>gamelist.xml
 ```
 
 Plans
