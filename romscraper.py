@@ -21,6 +21,7 @@ except ImportError:
 
 parser          = argparse.ArgumentParser(description='Scrape rom info.',prog="romscraper")
 parser.add_argument('rom', metavar='ROM', type=str, help='a rom file/folder (see -p)')
+parser.add_argument('-o', '--output', type=str, help="output file (XML)", required=False, default="gamelist.xml")
 parser.add_argument('-d', '--debug', action='store_true', help="print debug info", required=False)
 parser.add_argument('-p', '--path', action='store_true', help="scrape info from a whole folder", required=False)
 args            = parser.parse_args()
@@ -28,6 +29,7 @@ args            = parser.parse_args()
 whole_file      = args.rom
 debug_mode      = args.debug
 folder_mode     = args.path
+output          = args.output
 
 def debug_print(string):
         if debug_mode:
@@ -113,6 +115,6 @@ for i in xrange(len(files)):
 
 if has_elementtree:
     xml_tree        = et.ElementTree(xml_root)
-    xml_tree.write("gamelist.xml")
+    xml_tree.write(output)
 
 exit(0)
