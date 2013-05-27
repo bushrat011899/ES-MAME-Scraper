@@ -55,7 +55,6 @@ else:
 for i in xrange(len(files)):
     path, file      = os.path.split(files[i])
     rom             = re.sub('\.[a-zA-Z0-9]*','',file)
-    #debug_print(os.path.abspath(whole_file) + " + " + file)
     path	    = os.path.abspath(whole_file) + "/" + file 
 
     debug_print("Getting page...")
@@ -95,10 +94,27 @@ for i in xrange(len(files)):
 
         if results:
                 name = re.sub('(\<title\>Game\sDetails\:[\s]*)',"",results.group(0))
-                debug_print("Found Name:")
+                debug_print("Found Name: " + name)
         else:
                 debug_print("No Results Found")
-        if has_elementtree:
+        
+	year_results = re.search("</b> <a href='/year/[0-9]*", html)
+	
+	if year_results:
+		year = re.sub("</b> <a href='/year/", '', year_results.group(0))
+		debug_print("Found Year: " + year)
+	else:
+		debug_print("No Results Found")
+
+	manu_results = re.search('/manufacturer/[a-zA-Z]*', html)
+	
+	if manu_results:
+		manu = re.sub('/manufacturer/', '', manu_results.group(0))
+		debug_print("Found Manufacturer: " + manu)
+	else:
+		debug_print("No Results Found")
+
+	if has_elementtree:
             skip_node = False
             for node in xml_root:
                 for game_node in node:
@@ -108,6 +124,8 @@ for i in xrange(len(files)):
             if skip_node == False:
 		print "Found " + path
                 print "Adding " + name
+		print "From Year:	" + year
+		print "Made By:	" + manu
                 debug_print("Done")
 
                 xml_game        = et.SubElement(xml_root, "game")
@@ -115,6 +133,10 @@ for i in xrange(len(files)):
                 xml_path.text   = path
                 xml_name        = et.SubElement(xml_game, "name")
                 xml_name.text   = name
+		xml_year	= et.SubElement(xml_game, "year")
+		xml_year.text	= year
+		xml_manu	= et.SubElement(xml_game, "manufacturer")
+		xml_manu.text	= manu  
             else:
                 print "Skipping " + rom
     else:
