@@ -20,7 +20,7 @@ Usage
 
 Running the script directly is very simple:
 
-```
+```bash
 python romscraper.py ROM [-p] [-d] [-h] [-o=<file>]
 ```
 
@@ -31,7 +31,7 @@ After the script is run it dumps the information into a XML file (gamelist.xml) 
 
 Examples:
 
-```
+```bash
 python romscraper.py 19xx.zip
 >>>19XX: The War Against Destiny
 
