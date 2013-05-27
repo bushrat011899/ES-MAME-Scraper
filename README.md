@@ -51,4 +51,9 @@ python romscraper.py 19xx.zip -o /roms/gamelist.xml
 Plans
 =====
 
-This script is still not finished, it's still a little buggy and not very feature-full. I'm currently working on adding more information to be scraped like year. I'm also working on specifying the output directory for the gamelist.xml output.
+- [x] Make Repo
+- [x] Get it Working
+- [x] Add Year
+- [x] Add Manufacturer
+- [ ] Add Description
+- [x] Specify Output File
