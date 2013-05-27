@@ -27,6 +27,8 @@ python romscraper.py [-p] [-d] [-h] ROM
 Where ROM is either a directory or file, specify using -p flag (-p for folder, leave out for file)
 -d Is used to output debug info.
 
+After the script is run it dumps the information into a XML file (gamelist.xml) in the same directory as the script that EmulationStation can use. 
+
 Examples:
 
 ```
@@ -42,3 +44,7 @@ python romscraper.py /roms/ -p
 >>>Pac-Man
 ```
 
+Plans
+=====
+
+This script is still not finished, it's still a little buggy and not very feature-full. I'm currently working on adding more information to be scraped like year. I'm also working on specifying the output directory for the gamelist.xml output.
