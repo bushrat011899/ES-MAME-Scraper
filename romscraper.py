@@ -5,6 +5,7 @@ import os
 from os import listdir
 from os.path import isfile, join
 import argparse
+
 try:
     import elementtree.ElementTree as et
     has_elementtree = True
@@ -35,6 +36,9 @@ def debug_print(string):
         if debug_mode:
                 print string
 
+debug_print(os.path.abspath(__file__))
+debug_print(os.path.abspath(whole_file)) 
+
 if folder_mode:
     files = [ f for f in listdir(whole_file) if isfile(join(whole_file,f)) ]
     debug_print("In Folder Mode")
@@ -51,9 +55,11 @@ else:
 for i in xrange(len(files)):
     path, file      = os.path.split(files[i])
     rom             = re.sub('\.[a-zA-Z0-9]*','',file)
+    #debug_print(os.path.abspath(whole_file) + " + " + file)
+    path	    = os.path.abspath(whole_file) + "/" + file 
 
     debug_print("Getting page...")
-    debug_print("Path  : " + files[i])
+    debug_print("Path  : " + path)
     debug_print("File  : " + file)
     debug_print("ROM   : " + rom)
 
@@ -85,7 +91,7 @@ for i in xrange(len(files)):
 
     if skip == False:
         debug_print("Filtering Results...")
-        results = re.search('(\<title\>Game\sDetails\:[\s]*)[a-zA-z0-9\:\s\.-]*', html)
+        results = re.search('(\<title\>Game\sDetails\:[\s]*)[a-zA-Z0-9\:\s\.-]*', html)
 
         if results:
                 name = re.sub('(\<title\>Game\sDetails\:[\s]*)',"",results.group(0))
@@ -100,12 +106,13 @@ for i in xrange(len(files)):
                         skip_node = True
            
             if skip_node == False:
+		print "Found " + path
                 print "Adding " + name
                 debug_print("Done")
 
                 xml_game        = et.SubElement(xml_root, "game")
                 xml_path        = et.SubElement(xml_game, "path")
-                xml_path.text   = whole_file
+                xml_path.text   = path
                 xml_name        = et.SubElement(xml_game, "name")
                 xml_name.text   = name
             else:
