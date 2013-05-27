@@ -26,10 +26,10 @@ Where ROM is either a directory or file, specify using -p flag (-p for folder, l
 Examples:
 
 ```
-python romscraper 19xx.zip
+python romscraper.py 19xx.zip
 
-python romscraper /roms/19xx.zip
+python romscraper.py /roms/19xx.zip
 
-python romscraper /roms/ -p
+python romscraper.py /roms/ -p
 ```
 
