@@ -57,3 +57,4 @@ Plans
 - [x] Add Manufacturer
 - [ ] Add Description
 - [x] Specify Output File
+- [ ] Auto-Detect File/Folder
