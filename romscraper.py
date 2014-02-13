@@ -10,9 +10,6 @@ import requests
 import elementtree.ElementTree as et
 from requests.exceptions import HTTPError
 
-has_elementtree = True
-has_requests = True
-
 parser          = argparse.ArgumentParser(description='Scrape rom info.',prog="romscraper")
 parser.add_argument('rom', metavar='ROM', type=str, help='a rom file/folder (see -p)')
 parser.add_argument('-o', '--output', type=str, help="output file (XML)", required=False, default="gamelist.xml")
@@ -33,8 +30,8 @@ if not os.path.exists(image_path):
 	os.makedirs(image_path)
 
 def debug_print(string):
-        if debug_mode:
-                print string
+    if debug_mode:
+        print string
 
 def test_url(url):
 	try:
@@ -71,7 +68,7 @@ xml_root        = et.Element("gameList")
 for i in xrange(len(files)):
     path, file      = os.path.split(files[i])
     rom             = re.sub('\.[a-zA-Z0-9]*','',file)
-    path	    = os.path.abspath(whole_file) + "/" + file 
+    path	    	= os.path.abspath(whole_file) + "/" + file 
 
     debug_print("Getting page...")
     debug_print("Path  : " + path)
@@ -79,12 +76,12 @@ for i in xrange(len(files)):
     debug_print("ROM   : " + rom)
     
     if test_url('http://mamedb.com/game/'+ rom):
-        req = urllib2.Request('http://mamedb.com/game/'+ rom)
-        response = urllib2.urlopen(req)
-        debug_print('Downloaded Successfully')
-        html = response.read()
+        req 		= urllib2.Request('http://mamedb.com/game/'+ rom)
+        response 	= urllib2.urlopen(req)
+        html 		= response.read()
+    	skip 		= False
         response.close()
-    	skip = False
+        debug_print('Downloaded Successfully')
     else:
     	debug_print('Download Failed')
     	skip = True	
