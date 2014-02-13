@@ -19,6 +19,7 @@ parser.add_argument('-o', '--output', type=str, help="output file (XML)", requir
 parser.add_argument('-d', '--debug', action='store_true', help="print debug info", required=False)
 parser.add_argument('-p', '--path', action='store_true', help="scrape info from a whole folder", required=False)
 parser.add_argument('-i', '--image', action='store_true', help="retrieve images (when available)", required=False)
+parser.add_argument('-s', '--imagepath', type=str, help="path to save images", required=False, default=os.getcwd()+"/images/")
 args            = parser.parse_args()
 
 whole_file      = args.rom
@@ -26,6 +27,10 @@ debug_mode      = args.debug
 folder_mode     = args.path
 image_mode		= args.image
 output          = args.output
+image_path		= args.imagepath
+
+if not os.path.exists(image_path):
+	os.makedirs(image_path)
 
 def debug_print(string):
         if debug_mode:
@@ -39,6 +44,16 @@ def test_url(url):
 		return False
 	else:
 		return True
+
+def download_image(link, name, directory="", ext=None):
+	ext = ext if ext else link[-4:]
+	opener = urllib2.build_opener()
+	page = opener.open(link)
+	image = page.read()
+	
+	fout = open(directory+name+ext, "wb")
+	fout.write(image)
+	fout.close()
 
 debug_print(os.path.abspath(__file__))
 debug_print(os.path.abspath(whole_file)) 
@@ -101,43 +116,13 @@ for i in xrange(len(files)):
 		debug_print("No Results Found")
 		
 	### Experimental Image Getting Code Start
-	if image_mode:
-		if test_url("http://mamedb.com/snap/" + rom + ".png"):
-			urllib.urlretrieve("http://mamedb.com/snap/" + rom + ".png",  "images/snap/"+ rom + "_snap" + ".png")
-			snap	= "images/snap/"+ rom + "_snap" + ".png"
-			debug_print("Found Snap Image")
-		else:
-			snap 	= None
-			debug_print("No Snap Image Found")
-	
-		if test_url("http://mamedb.com/titles/" + rom + ".png"):
-			urllib.urlretrieve("http://mamedb.com/titles/" + rom + ".png",  "images/title/"+ rom + "_title" + ".png")
-			title	= "images/title/"+ rom + "_title" + ".png"
-			debug_print("Found Title Image")
-		else:
-			title	= None
-			debug_print("No Title Image Found")
-	
-		if test_url("http://mamedb.com/cabinets/" + rom + ".png"):
-			urllib.urlretrieve("http://mamedb.com/cabinets/" + rom + ".png",  "images/cabinet/"+ rom + "_cabinet" + ".png")
-			cabinet	= "images/cabinet/"+ rom + "_cabinet" + ".png"
-			debug_print("Found Cabinet Image")
-		else:
-			cabinet	= None
-			debug_print("No Cabinet Image Found")
-		
-		if test_url("http://mamedb.com/marquees/" + rom + ".png"):
-			urllib.urlretrieve("http://mamedb.com/marquees/" + rom + ".png",  "images/marquee/"+ rom + "_marquee" + ".png")
-			marquee	= "images/marquee/"+ rom + "_marquee" + ".png"
-			debug_print("Found Marquee Image")
-		else:
-			marquee	= None
-			debug_print("No Marquee Image Found")
+	if image_mode and test_url("http://mamedb.com/marquees/" + rom + ".png"):
+		download_image("http://mamedb.com/marquees/" + rom + ".png", rom, image_path)
+		boxart	= image_path + rom + ".png"
+		debug_print("Found Image")
 	else:
-		snap 	= None
-		title	= None
-		cabinet	= None
 		marquee	= None
+		debug_print("No Image Found")
 		
 	### End
 	skip_node = False
@@ -162,6 +147,8 @@ for i in xrange(len(files)):
 		xml_year.text	= year
 		xml_manu		= et.SubElement(xml_game, "manufacturer")
 		xml_manu.text	= manu
+		xml_image		= et.SubElement(xml_game, "image")
+		xml_image.text	= boxart
 	else:
 		print "Skipping " + rom
 
