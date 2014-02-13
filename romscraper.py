@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import re
 import urllib2
 import sys
@@ -5,20 +6,12 @@ import os
 from os import listdir
 from os.path import isfile, join
 import argparse
+import requests
+import elementtree.ElementTree as et
+from requests.exceptions import HTTPError
 
-try:
-    import elementtree.ElementTree as et
-    has_elementtree = True
-except ImportError:
-    print "Warning: Module ElementTree is NOT Available"
-    has_elementtree = False
-try:
-    import requests
-    from requests.exceptions import HTTPError
-    has_requests = True
-except ImportError:
-    print "Warning: Module Requests is NOT Available"
-    has_requests = False
+has_elementtree = True
+has_requests = True
 
 parser          = argparse.ArgumentParser(description='Scrape rom info.',prog="romscraper")
 parser.add_argument('rom', metavar='ROM', type=str, help='a rom file/folder (see -p)')
@@ -39,14 +32,13 @@ def debug_print(string):
                 print string
 
 def test_url(url):
-	if has_requests:
-        try:
-            r = requests.get(url)
-            r.raise_for_status()
-        except HTTPError:
-        	return False
-        else:
-        	return True
+	try:
+		r = requests.get(url)
+		r.raise_for_status()
+	except HTTPError:
+		return False
+	else:
+		return True
 
 debug_print(os.path.abspath(__file__))
 debug_print(os.path.abspath(whole_file)) 
@@ -58,10 +50,7 @@ else:
     files = [whole_file]
     debug_print("In File Mode")
 
-if has_elementtree:          
-    xml_root        = et.Element("gameList")
-else:
-    debug_print("XML File Output Disabled")
+xml_root        = et.Element("gameList")
 
 
 for i in xrange(len(files)):
@@ -73,9 +62,8 @@ for i in xrange(len(files)):
     debug_print("Path  : " + path)
     debug_print("File  : " + file)
     debug_print("ROM   : " + rom)
-	
-	
-	if test_url('http://mamedb.com/game/'+ rom):
+    
+    if test_url('http://mamedb.com/game/'+ rom):
         req = urllib2.Request('http://mamedb.com/game/'+ rom)
         response = urllib2.urlopen(req)
         debug_print('Downloaded Successfully')
@@ -152,37 +140,32 @@ for i in xrange(len(files)):
 		marquee	= None
 		
 	### End
+	skip_node = False
+	for node in xml_root:
+		for game_node in node:
+			if game_node.text == name:
+				skip_node = True
+   
+	if skip_node == False:
+		print "Found " + path
+		print "Adding " + name
+		print "From Year:	" + year
+		print "Made By:	" + manu
+		debug_print("Done")
 
-	if has_elementtree:
-            skip_node = False
-            for node in xml_root:
-                for game_node in node:
-                    if game_node.text == name:
-                        skip_node = True
-           
-            if skip_node == False:
-				print "Found " + path
-                print "Adding " + name
-				print "From Year:	" + year
-				print "Made By:	" + manu
-        		debug_print("Done")
+		xml_game        = et.SubElement(xml_root, "game")
+		xml_path        = et.SubElement(xml_game, "path")
+		xml_path.text   = path
+		xml_name        = et.SubElement(xml_game, "name")
+		xml_name.text   = name
+		xml_year		= et.SubElement(xml_game, "year")
+		xml_year.text	= year
+		xml_manu		= et.SubElement(xml_game, "manufacturer")
+		xml_manu.text	= manu
+	else:
+		print "Skipping " + rom
 
-       		 	xml_game        = et.SubElement(xml_root, "game")
-       		 	xml_path        = et.SubElement(xml_game, "path")
-        		xml_path.text   = path
-        		xml_name        = et.SubElement(xml_game, "name")
-        		xml_name.text   = name
-				xml_year	= et.SubElement(xml_game, "year")
-				xml_year.text	= year
-				xml_manu	= et.SubElement(xml_game, "manufacturer")
-				xml_manu.text	= manu
-            else:
-                print "Skipping " + rom
-    else:
-        print "Skipping " + rom
-
-if has_elementtree:
-    xml_tree        = et.ElementTree(xml_root)
-    xml_tree.write(output)
+xml_tree        = et.ElementTree(xml_root)
+xml_tree.write(output)
 
 exit(0)
