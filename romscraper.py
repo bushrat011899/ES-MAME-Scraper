@@ -132,10 +132,10 @@ for i in xrange(len(files)):
 				skip_node = True
    
 	if skip_node == False:
-		print "Found " + path
-		print "Adding " + name
-		print "From Year:	" + year
-		print "Made By:	" + manu
+		print "\nFound		:	" + path
+		print "Adding		:	" + name
+		print "From Year	: 	" + year
+		print "Made By		: 	" + manu
 		debug_print("Done")
 
 		xml_game        = et.SubElement(xml_root, "game")
