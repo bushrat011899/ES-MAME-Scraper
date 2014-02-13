@@ -8,11 +8,13 @@ The only information grabbed at the moment is the proper name, but support for g
 Installation
 ============
 
+NOTE: Currently uses Python 2.7, please ensure that the appropriate version of Python is used before submitting bug reports.
+
+ElementTree and Requests are bundled into the ZIP file now, so simply run the script in the same directory as the ElementTree and Requests folders or install those modules.
+
 Download and install ElementTree from [Here](http://effbot.org/zone/element-index.htm)
 
 Download and install Requests from [Here](https://pypi.python.org/pypi/requests)
-
-As this is a single file Python script, there is no need to "install" it, just place it anywhere you see fit.
 
 
 Usage
