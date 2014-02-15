@@ -144,8 +144,9 @@ for i in xrange(len(files)):
 		xml_year.text	= year
 		xml_manu		= et.SubElement(xml_game, "manufacturer")
 		xml_manu.text	= manu
-		xml_image		= et.SubElement(xml_game, "image")
-		xml_image.text	= boxart
+		if image_mode:
+			xml_image		= et.SubElement(xml_game, "image")
+			xml_image.text	= boxart
 	else:
 		print "Skipping " + rom
 
